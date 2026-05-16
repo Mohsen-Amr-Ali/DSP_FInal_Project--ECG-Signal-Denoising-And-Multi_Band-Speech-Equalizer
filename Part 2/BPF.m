@@ -1,12 +1,14 @@
 function [b, a] = BPF(lowerBound, upperBound, Fs, order, filterStruct, filterType)
     wp = [lowerBound   upperBound] / (Fs/2);
-    wp(1) = max(wp(1), 0.01);
-    wp(2) = min(wp(2), 0.99);
+    wp(1) = max(wp(1), 0.001);
+    wp(2) = min(wp(2), 0.999);
 
     if strcmp(filterStruct, 'IIR')
-        ws = [max(lowerBound-100, 1)  (upperBound+100)] / (Fs/2);
-        ws(1) = max(ws(1), 0.01);
-        ws(2) = min(ws(2), 0.99);
+        ws = [wp(1)*0.75, wp(2)*1.25];
+        
+        ws(1) = max(ws(1), 0.0005);
+        ws(2) = min(ws(2), 0.9995);
+        
 
         switch filterType
             case 'Butterworth'

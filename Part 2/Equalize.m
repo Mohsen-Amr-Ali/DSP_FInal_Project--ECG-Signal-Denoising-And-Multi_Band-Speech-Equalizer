@@ -1,6 +1,7 @@
 function [X,updatedSignal,Fs,t,filters] = Equalize(fileName, bands, gains, order, filterStruct, filterType)
 %EQUALIZE Summary of this function goes here
 %   Detailed explanation goes here
+
     [X,Fs] = audioread(fileName);
     X = X(:,1);
     t = (0:length(X)-1) / Fs;
@@ -19,7 +20,7 @@ function [X,updatedSignal,Fs,t,filters] = Equalize(fileName, bands, gains, order
         else
             [b, a] = BPF(bands(i-1),bands(i),Fs,order,filterStruct,filterType);
         end
-        %fprintf('Band %d-%d Hz: order = %d\n', bands(i-1), bands(i), length(a)-1);
+        fprintf('Band %d-%d Hz: order = %d\n', bands(i-1), bands(i), length(a)-1);
         filters{i-1} = struct('b', b, 'a', a,'low', bands(i-1), 'high', bands(i));  
         y = filtfilt(b,a,X) * 10^(gains(i-1) / 20);
         updatedSignal = updatedSignal + y;

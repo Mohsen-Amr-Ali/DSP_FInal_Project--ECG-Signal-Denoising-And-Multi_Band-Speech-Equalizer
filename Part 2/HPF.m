@@ -4,9 +4,11 @@ function [b, a] = HPF(lowerBound, upperBound, Fs, order, filterStruct, filterTyp
 
     if strcmp(filterStruct, 'IIR')
         ws = max((lowerBound - 100) / (Fs/2), 0.01);
-        if ws >= wn
-            ws = max(wn - 0.005, 0.01); 
-        end
+        ws = min(ws, wn - 0.01); 
+        ws = max(ws, 0.01);
+        %if ws >= wn
+        %    ws = max(wn - 0.005, 0.01); 
+        %end
         switch filterType
             case 'Butterworth'
                 [N, wn_out] = buttord(wn, ws, 0.5, 20);

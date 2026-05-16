@@ -1,12 +1,14 @@
 function [b, a] = LPF(lowerBound, upperBound, Fs, order, filterStruct, filterType)
     wn = upperBound / (Fs/2);
-    wn = min(wn, 0.99);
+    wn = min(wn, 0.999);
 
     if strcmp(filterStruct, 'IIR')
         ws = min((upperBound + 100) / (Fs/2), 0.99);
-        if ws <= wn
-            ws = min(wn + 0.005, 0.99);
-        end
+        ws = max(ws, wn + 0.001);
+        ws = min(ws, 0.99);
+        %if ws <= wn
+        %    ws = min(wn + 0.005, 0.99);
+        %end
         switch filterType
             case 'Butterworth'
                 [N, wn_out] = buttord(wn, ws, 0.5, 20);

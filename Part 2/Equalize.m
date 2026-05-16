@@ -22,7 +22,7 @@ function [X,updatedSignal,Fs,t,filters] = Equalize(fileName, bands, gains, order
         end
         fprintf('Band %d-%d Hz: order = %d\n', bands(i-1), bands(i), length(a)-1);
         filters{i-1} = struct('b', b, 'a', a,'low', bands(i-1), 'high', bands(i));  
-        y = filtfilt(b,a,X) * 10^(gains(i-1) / 20);
+        y = filter(b,a,X) * 10^(gains(i-1) / 20);
         updatedSignal = updatedSignal + y;
     end
 

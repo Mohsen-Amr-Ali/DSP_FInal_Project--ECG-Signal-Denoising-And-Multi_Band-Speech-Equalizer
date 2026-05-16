@@ -1,4 +1,4 @@
-function [X,updatedSignal,Fs,t,filters] = Equalize(fileName,bands,gains,order)
+function [X,updatedSignal,Fs,t,filters] = Equalize(fileName, bands, gains, order, filterType, windowType, iirType)
 %EQUALIZE Summary of this function goes here
 %   Detailed explanation goes here
     [X,Fs] = audioread(fileName);
@@ -13,11 +13,11 @@ function [X,updatedSignal,Fs,t,filters] = Equalize(fileName,bands,gains,order)
     
     for i = 2:length(bands)
         if i == 2
-            [b, a] = LPF(bands(i-1),bands(i),Fs,order);
+            [b, a] = LPF(bands(i-1),bands(i),Fs,order,filterType,windowType,iirType);
         elseif i == length(bands)
-            [b, a] = HPF(bands(i-1),bands(i),Fs,order);
+            [b, a] = HPF(bands(i-1),bands(i),Fs,order,filterType,windowType,iirType);
         else
-            [b, a] = BPF(bands(i-1),bands(i),Fs,order);
+            [b, a] = BPF(bands(i-1),bands(i),Fs,order,filterType,windowType,iirType);
         end
         fprintf('Band %d-%d Hz: order = %d\n', bands(i-1), bands(i), length(a)-1);
         filters{i-1} = struct('b', b, 'a', a,'low', bands(i-1), 'high', bands(i));  

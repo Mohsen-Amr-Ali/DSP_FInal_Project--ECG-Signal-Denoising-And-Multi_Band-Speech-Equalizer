@@ -1,11 +1,13 @@
-function [b, a] = LPF(lowerBound, upperBound, Fs, order, filterType, windowType, iirType)
+function [b, a] = LPF(lowerBound, upperBound, Fs, order, filterStruct, filterType)
     wn = upperBound / (Fs/2);
     wn = min(wn, 0.99);
 
-    if strcmp(filterType, 'IIR')
+    if strcmp(filterStruct, 'IIR')
         ws = min((upperBound + 100) / (Fs/2), 0.99);
-
-        switch iirType
+        if ws <= wn
+            ws = min(wn + 0.005, 0.99);
+        end
+        switch filterType
             case 'Butterworth'
                 [N, wn_out] = buttord(wn, ws, 0.5, 20);
                 N = min(N, order);
@@ -22,7 +24,7 @@ function [b, a] = LPF(lowerBound, upperBound, Fs, order, filterType, windowType,
                 [b, a] = cheby2(N, 20, wn_out, 'low');
         end
     else
-        win = getWindow(order, windowType);
+        win = getWindow(order, filterType);
         b = fir1(order, wn, 'low', win);
         a = 1;
     end

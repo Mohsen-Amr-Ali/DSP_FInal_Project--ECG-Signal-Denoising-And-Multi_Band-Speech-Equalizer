@@ -1,4 +1,4 @@
-function [X,updatedSignal,Fs,t,filters] = Equalize(fileName, bands, gains, order, filterType, windowType, iirType)
+function [X,updatedSignal,Fs,t,filters] = Equalize(fileName, bands, gains, order, filterStruct, filterType)
 %EQUALIZE Summary of this function goes here
 %   Detailed explanation goes here
     [X,Fs] = audioread(fileName);
@@ -13,13 +13,13 @@ function [X,updatedSignal,Fs,t,filters] = Equalize(fileName, bands, gains, order
     
     for i = 2:length(bands)
         if i == 2
-            [b, a] = LPF(bands(i-1),bands(i),Fs,order,filterType,windowType,iirType);
+            [b, a] = LPF(bands(i-1),bands(i),Fs,order,filterStruct,filterType);
         elseif i == length(bands)
-            [b, a] = HPF(bands(i-1),bands(i),Fs,order,filterType,windowType,iirType);
+            [b, a] = HPF(bands(i-1),bands(i),Fs,order,filterStruct,filterType);
         else
-            [b, a] = BPF(bands(i-1),bands(i),Fs,order,filterType,windowType,iirType);
+            [b, a] = BPF(bands(i-1),bands(i),Fs,order,filterStruct,filterType);
         end
-        fprintf('Band %d-%d Hz: order = %d\n', bands(i-1), bands(i), length(a)-1);
+        %fprintf('Band %d-%d Hz: order = %d\n', bands(i-1), bands(i), length(a)-1);
         filters{i-1} = struct('b', b, 'a', a,'low', bands(i-1), 'high', bands(i));  
         y = filtfilt(b,a,X) * 10^(gains(i-1) / 20);
         updatedSignal = updatedSignal + y;

@@ -16,5 +16,9 @@ function [b_notch, a_notch] = design_pole_zero_notch(Fs, Notch_F0, r)
     a2 = r^2;
     a_notch = [a0, a1, a2];
 
+    % Normalize DC gain to 1.0 (0 dB) to prevent DC shifts in output
+    dc_gain = sum(b_notch) / sum(a_notch);
+    b_notch = b_notch / dc_gain;
+
     disp(['-> Manual Pole-Zero Notch Coefficients Computed (r = ', num2str(r), ').']);
 end
